@@ -1,0 +1,14 @@
+.python-version
+.env
+envs/
+.DS_Store
+__pycache__/
+.idea/
+docker-compose.local.yml
+Dockerfile
+.gitignore
+.git/
+.github/
+.dmypy.json
+.coverage
+htmlcov/
