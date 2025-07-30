@@ -1,13 +1,13 @@
 from django.conf import settings
 from django.db import models
-from apps.category.models import Category
 
+from apps.category.models import Category
 
 
 class Study(models.Model):
     STATUS_CHOICES = [
-        ('recruiting', 'Recruiting'),
-        ('in_progress', 'In Progress'),
+        ("recruiting", "Recruiting"),
+        ("in_progress", "In Progress"),
     ]
 
     title = models.CharField(max_length=255)

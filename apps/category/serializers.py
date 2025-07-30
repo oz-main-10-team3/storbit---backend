@@ -8,6 +8,7 @@ class SubCategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ("id", "name")
 
+
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = SubCategorySerializer(many=True, read_only=True)
 
