@@ -85,10 +85,10 @@ DATABASES = {
     }
 }
 
-for key, value in DATABASES["default"].items():
+for key, value in DATABASES.items():
     if key != "ENGINE":
         if not value:
-            raise ValueError(f"Database setting '{key}' is empty")
+            raise ValueError(f"Database {key} is empty")
 
 
 # Password validation
