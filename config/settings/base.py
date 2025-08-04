@@ -5,13 +5,14 @@ from typing import List, Optional
 from dotenv import load_dotenv
 
 # .env 파일이 프로젝트 루트에 있다면 로드
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(dotenv_path=BASE_DIR / "envs/.local.env")
 
 # Secret / Debug
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "fallback-secret-key")
-DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in ("1", "true", "yes")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError("DJANGO_SECRET_KEY environment variable not set")
 
 # ALLOWED_HOSTS
 raw_hosts = os.getenv("DJANGO_ALLOWED_HOSTS", "*")
@@ -87,6 +88,8 @@ for key, value in DATABASES.items():
     if key != "ENGINE":
         if not value:
             raise ValueError(f"Database {key} is empty")
+
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
