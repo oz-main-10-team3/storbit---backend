@@ -25,9 +25,10 @@ line-length = 120
 profile="black"
 
 [tool.mypy]
-# plugins = ["mypy_django_plugin.main"]
+plugins = ["mypy_django_plugin.main"]
 python_version = 3.12
 ignore_missing_imports = true
+
 
 [tool.coverage.run]
 omit = [
