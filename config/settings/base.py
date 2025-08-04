@@ -9,10 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 load_dotenv(dotenv_path=BASE_DIR / "envs/.local.env")
 
-# Secret / Debug
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 if not SECRET_KEY:
     raise ValueError("DJANGO_SECRET_KEY environment variable not set")
+
+DEBUG = True
 
 # ALLOWED_HOSTS
 raw_hosts = os.getenv("DJANGO_ALLOWED_HOSTS", "*")
@@ -84,10 +85,10 @@ DATABASES = {
     }
 }
 
-for key, value in DATABASES.items():
+for key, value in DATABASES["default"].items():
     if key != "ENGINE":
         if not value:
-            raise ValueError(f"Database {key} is empty")
+            raise ValueError(f"Database setting '{key}' is empty")
 
 
 # Password validation
