@@ -1,7 +1,11 @@
+import os
+
 from config.settings.base import *
 
+from .base import *
+
 DEBUG = True
-ALLOWED_HOSTS: list[str] = os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(" ")
+
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "static/"
@@ -12,4 +16,13 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 INTERNAL_IPS = [
     "127.0.0.1",
+]
+
+ALLOWED_ORIGINS: list[str] = os.getenv("CORS_ALLOWED_ORIGINS", "").split(" ")
+CORS_ALLOWED_ORIGINS: list[str] = [
+    "http://localhost:3000",
+]
+
+CSRF_TRUSTED_ORIGINS: list[str] = [
+    "http://localhost:3000",
 ]
