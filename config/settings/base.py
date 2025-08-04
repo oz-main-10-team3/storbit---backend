@@ -90,6 +90,9 @@ for key, value in DATABASES.items():
         if not value:
             raise ValueError(f"Database {key} is empty")
 
+print(os.getenv("DB_NAME"))
+print(os.getenv("DB_USER"))
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
