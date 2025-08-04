@@ -4,8 +4,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Category
-from .serializers import CategorySerializer
+from apps.category.models import Category
+from apps.category.serializers import CategorySerializer
 
 
 class CategoryListView(generics.ListAPIView):

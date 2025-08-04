@@ -143,7 +143,7 @@ jobs:
       - name: Check each app has test & Run coverage
         run: |
           ran_tests=false
-          apps="community courses qna tests users"
+          apps="category studies"
 
           for app_name in $apps; do
             app_path="apps/$app_name"

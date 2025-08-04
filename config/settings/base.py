@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "drf_spectacular",
     "apps.category",
+    "apps.mypage",
+    "apps.studies",
     "drf_yasg",
     "rest_framework",
 ]
