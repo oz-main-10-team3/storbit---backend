@@ -76,7 +76,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: pw1234
-          POSTGRES_DB: ozcoding_externship
+          POSTGRES_DB: storbit
           TZ: Asia/Seoul
         # health check
         options: >-
@@ -143,7 +143,7 @@ jobs:
       - name: Check each app has test & Run coverage
         run: |
           ran_tests=false
-          apps="community courses qna tests users"
+          apps="category studies"
 
           for app_name in $apps; do
             app_path="apps/$app_name"
