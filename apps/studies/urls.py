@@ -1,7 +1,7 @@
 from django.urls import path
+
 from apps.studies.views import StudyDetailView
 from apps.studies.views.vote import VoteCreateAPIView
-
 
 app_name = "studies"
 

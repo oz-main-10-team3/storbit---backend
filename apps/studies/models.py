@@ -54,6 +54,7 @@ class Study(models.Model):
     def __str__(self):
         return self.title
 
+
 # 투표 기능
 class Vote(models.Model):
     study = models.ForeignKey(Study, on_delete=models.CASCADE, related_name="votes")
