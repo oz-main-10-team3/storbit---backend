@@ -53,3 +53,12 @@ class Study(models.Model):
 
     def __str__(self):
         return self.title
+
+# 투표 기능
+class Vote(models.Model):
+    study = models.ForeignKey(Study, on_delete=models.CASCADE, related_name="votes")
+    question = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.question
