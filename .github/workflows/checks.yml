@@ -76,7 +76,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: pw1234
-          POSTGRES_DB: ozcoding_externship
+          POSTGRES_DB: storbit
           TZ: Asia/Seoul
         # health check
         options: >-
