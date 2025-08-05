@@ -1,5 +1,8 @@
-from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
-                                        PermissionsMixin)
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -121,9 +124,7 @@ class SocialAccount(models.Model):
         related_name="social_accounts",
         verbose_name="사용자",
     )
-    provider = models.CharField(
-        "제공자", max_length=20, default="KAKAO"
-    )  # 카카오만 사용
+    provider = models.CharField("제공자", max_length=20, default="KAKAO")  # 카카오만 사용
     provider_id = models.CharField("카카오 ID", max_length=255, unique=True)
     profile_image = models.URLField("프로필 이미지", blank=True)
 
@@ -185,9 +186,7 @@ class Withdrawal(models.Model):
         ]
 
     def __str__(self):
-        return (
-            f"{self.user.fullname} 탈퇴 신청 ({self.created_at.strftime('%Y-%m-%d')})"
-        )
+        return f"{self.user.fullname} 탈퇴 신청 ({self.created_at.strftime('%Y-%m-%d')})"
 
     def save(self, *args, **kwargs):
         # 탈퇴 신청시 사용자 비활성화
@@ -234,9 +233,7 @@ class UserService:
     @staticmethod
     def withdraw_user(user, reason, description="", password=""):
         # 사용자 탈퇴 처리
-        return Withdrawal.objects.create(
-            user=user, reason=reason, description=description, password=password
-        )
+        return Withdrawal.objects.create(user=user, reason=reason, description=description, password=password)
 
     @staticmethod
     def get_kakao_profile_image(user):
