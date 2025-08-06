@@ -4,6 +4,8 @@ from typing import List, Optional
 
 from dotenv import load_dotenv
 
+from apps import users
+
 # .env 파일이 프로젝트 루트에 있다면 로드
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -29,8 +31,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "drf_spectacular",
     "apps.category",
-    "apps.mypage",
     "apps.studies",
+    "apps.users",
+    "apps.votes",
     "drf_yasg",
     "rest_framework",
 ]
@@ -111,6 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+AUTH_USER_MODEL = "users.User"
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
