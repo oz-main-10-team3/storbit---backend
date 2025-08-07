@@ -85,7 +85,7 @@ DATABASES = {
         "NAME": os.getenv("DB_NAME"),
         "USER": os.getenv("DB_USER"),
         "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": "db",
+        "HOST": os.getenv("DB_HOST"),
         "PORT": os.getenv("DB_PORT"),
     }
 }
@@ -94,9 +94,6 @@ for key, value in DATABASES.items():
     if key != "ENGINE":
         if not value:
             raise ValueError(f"Database {key} is empty")
-
-print(os.getenv("DB_NAME"))
-print(os.getenv("DB_USER"))
 
 
 # Password validation
