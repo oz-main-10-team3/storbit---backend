@@ -1,7 +1,4 @@
-from datetime import timedelta
-
 from django.db.models import Count
-from django.utils import timezone
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
@@ -38,8 +35,7 @@ class MainStudyListAPIView(generics.ListAPIView):
         if sort_type == "hot":
             queryset = queryset.order_by("-favorite_count", "-created_at")
         elif sort_type == "steady":
-            one_week_ago = timezone.now() - timedelta(days=7)
-            queryset = queryset.filter(created_at__lte=one_week_ago).order_by("-favorite_count")
+            queryset = queryset.order_by("-created_at")
 
         else:
             queryset = queryset.order_by("-created_at")

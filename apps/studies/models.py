@@ -2,10 +2,10 @@ from django.conf import settings
 from django.db import models
 
 from apps.category.models import Category
-from apps.users.models import User
 
 
 class Study(models.Model):
+
     STATUS_CHOICES = [
         ("recruiting", "Recruiting"),
         ("in_progress", "In Progress"),
@@ -29,12 +29,12 @@ class Study(models.Model):
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
     is_live = models.BooleanField(default=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    leader = models.ForeignKey(User, on_delete=models.CASCADE, related_name="led_studies")
+    leader = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="led_studies")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def str(self):
+    def __str__(self):
         return self.title
