@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "apps.category",
     "apps.studies",
     "apps.users",
+    "apps.friends",
     "apps.votes",
     "drf_yasg",
     "rest_framework",
