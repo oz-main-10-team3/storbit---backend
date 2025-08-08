@@ -1,6 +1,6 @@
 from django.urls import path
 
-from apps.studies.serializers.study_application_serializers import (
+from apps.studies.views.study_application_view import (
     StudyApplicationCreateAPIView,
 )
 

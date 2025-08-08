@@ -1,24 +1,26 @@
-from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
+from drf_spectacular.utils import extend_schema
+from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
 
 from apps.studies.models import StudyApplication
+from apps.studies.serializers.study_application_serializers import StudyApplicationSerializer
 
 
-class StudyApplicationSerializer(serializers.ModelSerializer):
-    """
-    스터디 신청을 위한 시리얼라이저.
-    study와 user 필드의 조합이 고유한지 검증합니다.
-    """
+@extend_schema(
+    summary="스터디 신청",
+    description="사용자가 특정 스터디에 신청합니다. 이미 신청했거나 스터디가 존재하지 않으면 오류를 반환합니다.",
+    request=StudyApplicationSerializer,
+    responses={
+        201: {"description": "스터디 신청 성공"}, #"response": StudyApplicationSerializer},
+        400: {"description": "잘못된 요청 또는 이미 신청함"},
+        401: {"description": "인증되지 않은 사용자"},
+        404: {"description": "스터디를 찾을 수 없음"},
+    },
+)
+class StudyApplicationCreateAPIView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = StudyApplicationSerializer
+    queryset = StudyApplication.objects.all()  # type: ignore
 
-    class Meta:
-        model = StudyApplication
-        fields = ["id", "study", "user"]
-        read_only_fields = ["user"]
-
-        validators = [
-            UniqueTogetherValidator(
-                queryset=StudyApplication.objects.all(),  # type: ignore
-                fields=["study", "user"],
-                message="이미 해당 스터디에 신청했습니다.",
-            )
-        ]
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
