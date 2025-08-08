@@ -3,6 +3,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from unicodedata import category
 
 from apps.category.models import Category
 from apps.category.serializers import CategorySerializer
