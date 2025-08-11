@@ -3,7 +3,9 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 
 from apps.studies.models import StudyApplication
-from apps.studies.serializers.study_application_serializers import StudyApplicationSerializer
+from apps.studies.serializers.study_application_serializers import (
+    StudyApplicationSerializer,
+)
 
 
 @extend_schema(
@@ -11,7 +13,7 @@ from apps.studies.serializers.study_application_serializers import StudyApplicat
     description="사용자가 특정 스터디에 신청합니다. 이미 신청했거나 스터디가 존재하지 않으면 오류를 반환합니다.",
     request=StudyApplicationSerializer,
     responses={
-        201: {"description": "스터디 신청 성공"}, #"response": StudyApplicationSerializer},
+        201: {"description": "스터디 신청 성공"},  # "response": StudyApplicationSerializer},
         400: {"description": "잘못된 요청 또는 이미 신청함"},
         401: {"description": "인증되지 않은 사용자"},
         404: {"description": "스터디를 찾을 수 없음"},
