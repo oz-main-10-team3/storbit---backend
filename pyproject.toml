@@ -16,8 +16,10 @@ dependencies = [
     "mypy>=1.17.0",
     "psycopg2-binary>=2.9.10",
     "uvicorn[standard]>=0.35.0",
-    "django-stubs (>=5.2.2,<6.0.0)",
+    "django-stubs>=5.2.2,<6.0.0",
     "python-dotenv (>=1.1.1,<2.0.0)",
+    "types-requests>=2.32.4.20250809",
+    "coverage>=7.10.3",
 ]
 
 [tool.black]
