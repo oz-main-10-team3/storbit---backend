@@ -45,7 +45,14 @@ class StudyMember(models.Model):
     class Role(models.TextChoices):
         MASTER = "MASTER", "방장"
         MEMBER = "MEMBER", "일반 회원"
-
+    class Level(models.TextChoices):
+        BEGINNER = 'beginner', '왕초보'
+        NOVICE = 'novice', '초보'
+        INTERMEDIATE = 'intermediate', '중급'
+        ADVANCED = 'advanced', '고급'
+        MASTER = 'master', '마스터'
+        ANY = 'any', '무관'
+    level = models.CharField(max_length=10, choices=Level.choices)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     is_permitted = models.BooleanField(default=False)
@@ -67,3 +74,4 @@ class DailyMission(models.Model):
     title = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
