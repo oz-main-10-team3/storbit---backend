@@ -40,7 +40,6 @@ class Study(models.Model):
     def str(self):
         return self.title
 
-
 # 스터디 멤버
 class StudyMember(models.Model):
     class Role(models.TextChoices):
@@ -58,20 +57,12 @@ class StudyMember(models.Model):
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     is_permitted = models.BooleanField(default=False)
     role = models.CharField(max_length=50, choices=Role.choices)
+    created_at = models.DateTimeField(auto_now_add=True)  # 생성 시각 자동 저장
 
+    class Meta:
+        ordering = ["-created_at"]  # 최신 생성순 정렬
+        verbose_name = "스터디룸"
+        verbose_name_plural = "스터디룸 목록"
 
-# 방장 미션
-class LeaderMission(models.Model):
-    study = models.ForeignKey(Study, on_delete=models.CASCADE)
-    final_goal = models.TextField()
-    common_mission = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-# 스터디원 미션
-class DailyMission(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    study = models.ForeignKey(Study, on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return f"{self.title} (방장: {self.owner.username})"

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from apps.studies.models import StudyMember, StudyRole, StudyRoom
+from apps.studies.models import StudyMember, Study
 
 User = get_user_model()
 
@@ -12,7 +12,7 @@ class StudyRoomSerializer(serializers.ModelSerializer):
     member_count = serializers.SerializerMethodField()
 
     class Meta:
-        model = StudyRoom
+        model = Study
         fields = [
             "id",
             "title",
@@ -37,7 +37,7 @@ class StudyRoomSerializer(serializers.ModelSerializer):
 
     def get_leader_name(self, obj):
         try:
-            leader_member = obj.studymember_set.get(role=StudyRole.MASTER)
+            leader_member = obj.studymember_set.get(role=StudyMember.Role.MASTER)
             return leader_member.user.username
         except StudyMember.DoesNotExist:
             return None
@@ -48,7 +48,7 @@ class StudyRoomSerializer(serializers.ModelSerializer):
 
 class StudyRoomCreateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = StudyRoom
+        model = Study
         fields = [
             "title",
             "description",
@@ -64,7 +64,7 @@ class StudyRoomCreateSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        return StudyRoom.objects.create(**validated_data)
+        return Study.objects.create(**validated_data)
 
 
 class TransferOwnerSerializer(serializers.Serializer):
