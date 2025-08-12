@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -29,9 +29,6 @@ class IsStudyRoomMaster(permissions.BasePermission):
 
 @extend_schema(tags=["스터디룸"])
 class StudyRoomViewSet(viewsets.ModelViewSet):
-    """
-    스터디룸 CRUD 및 방장 위임 API
-    """
 
     queryset = Study.objects.all()
     serializer_class = StudyRoomSerializer
@@ -45,8 +42,9 @@ class StudyRoomViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         study_room = serializer.save()
         StudyMember.objects.create(
-            study_room=study_room, user=self.request.user, role=StudyRole.MASTER, is_permitted=True
+            study_room=study_room, user=self.request.user, role=StudyMember.Role.MASTER, is_permitted=True
         )
+
 
     @extend_schema(summary="스터디룸 목록 조회", description="전체 스터디룸 목록을 최신순으로 조회합니다.")
     def list(self, request, *args, **kwargs):
@@ -96,7 +94,7 @@ class StudyRoomViewSet(viewsets.ModelViewSet):
 
         try:
             current_owner_member = StudyMember.objects.get(
-                study_room=study_room, user=current_user, role=StudyRole.MASTER
+                study_room=study_room, user=current_user, role=StudyMember.Role.MASTER
             )
         except StudyMember.DoesNotExist:
             return Response({"detail": "현재 방장만 권한을 변경할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
@@ -111,10 +109,10 @@ class StudyRoomViewSet(viewsets.ModelViewSet):
                 {"detail": "자기 자신에게는 권한을 위임할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        current_owner_member.role = StudyRole.MEMBER
+        current_owner_member.role = StudyMember.Role.MEMBER
         current_owner_member.save()
 
-        new_owner_member.role = StudyRole.MASTER
+        new_owner_member.role = StudyMember.Role.MASTER
         new_owner_member.save()
 
         return Response(
