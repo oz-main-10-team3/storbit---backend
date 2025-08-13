@@ -2,15 +2,16 @@ from django.http.response import JsonResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.views import APIView
-from apps.users.utils.jwt import generate_jwt_token_pair
+
 from apps.users.serializers.kakao import KakaoLoginSerializer
 from apps.users.services.social_login import KakaoLoginService
+from apps.users.utils.jwt import generate_jwt_token_pair
 
 
 class KakaoLoginView(APIView):
     serializer_class = KakaoLoginSerializer
 
-    @extend_schema(tags=["사용자"],summary="카카오소셜 로그인")
+    @extend_schema(tags=["사용자"], summary="카카오소셜 로그인")
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)

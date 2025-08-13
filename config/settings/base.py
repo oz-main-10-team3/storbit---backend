@@ -5,7 +5,6 @@ from typing import List, Optional
 
 from dotenv import load_dotenv
 
-
 # .env 파일이 프로젝트 루트에 있다면 로드
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -36,8 +35,6 @@ INSTALLED_APPS = [
     "apps.votes",
     "drf_yasg",
     "rest_framework",
-    "rest_framework_simplejwt",
-    "rest_framework_simplejwt.token_blacklist",
 ]
 
 REST_FRAMEWORK = {
@@ -99,7 +96,6 @@ for key, value in DATABASES.items():
     if key != "ENGINE":
         if not value:
             raise ValueError(f"Database {key} is empty")
-
 
 
 # Password validation

@@ -18,6 +18,9 @@ dependencies = [
     "uvicorn[standard]>=0.35.0",
     "django-stubs (>=5.2.2,<6.0.0)",
     "python-dotenv (>=1.1.1,<2.0.0)",
+    "rest-framework-simplejwt>=0.0.2",
+    "requests>=2.32.4",
+    "types-requests>=2.32.4.20250809",
 ]
 
 [tool.black]
