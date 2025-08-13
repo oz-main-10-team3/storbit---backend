@@ -1,10 +1,10 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 from typing import List, Optional
 
 from dotenv import load_dotenv
 
-from apps import users
 
 # .env 파일이 프로젝트 루트에 있다면 로드
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -36,10 +36,15 @@ INSTALLED_APPS = [
     "apps.votes",
     "drf_yasg",
     "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
 }
 
 SPECTACULAR_SETTINGS = {
@@ -95,8 +100,6 @@ for key, value in DATABASES.items():
         if not value:
             raise ValueError(f"Database {key} is empty")
 
-print(os.getenv("DB_NAME"))
-print(os.getenv("DB_USER"))
 
 
 # Password validation
@@ -123,3 +126,12 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}
+
+KAKAO_APP_CLIENT = os.getenv("KAKAO_APP_CLIENT")
+KAKAO_CLIENT_SECRET = os.getenv("KAKAO_CLIENT_SECRET")
+KAKAO_REDIRECT_URI = os.getenv("KAKAO_REDIRECT_URI")
