@@ -30,6 +30,8 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "drf_spectacular",
     "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 THIRD_RARTY_APPS = ["apps.category", "apps.studies", "apps.users", "apps.reviews", "apps.message"]
@@ -38,7 +40,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_RARTY_APPS
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        # "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
 }
 

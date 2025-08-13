@@ -21,7 +21,6 @@ dependencies = [
     "rest-framework-simplejwt>=0.0.2",
     "requests>=2.32.4",
     "types-requests>=2.32.4.20250809",
-    "django-cors-headers>=4.7.0",
 ]
 
 [tool.black]
