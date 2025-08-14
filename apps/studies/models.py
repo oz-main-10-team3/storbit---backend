@@ -42,10 +42,14 @@ class Study(models.Model):
 
 # 스터디 멤버
 class StudyMember(models.Model):
+    class Role(models.TextChoices):
+        MASTER = "MASTER", "방장"
+        MEMBER = "MEMBER", "일반 회원"
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     is_permitted = models.BooleanField(default=False)
-    role = models.CharField(max_length=50)
+    role = models.CharField(max_length=50, choices=Role.choices)
 
 
 # 방장 미션
