@@ -60,7 +60,6 @@ class StudyMember(models.Model):
     role = models.CharField(max_length=50, choices=Role.choices)
 
 
-
 # 방장 미션
 class LeaderMission(models.Model):
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
