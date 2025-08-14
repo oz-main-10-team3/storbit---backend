@@ -21,7 +21,7 @@ raw_hosts = os.getenv("DJANGO_ALLOWED_HOSTS", "*")
 ALLOWED_HOSTS: List[str] = raw_hosts.split()
 
 # Application definition
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -29,14 +29,18 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "drf_spectacular",
+    "rest_framework",
+    ]
+
+THIRD_RARTY_APPS=[
     "apps.category",
     "apps.studies",
     "apps.users",
-    "apps.votes",
-    "drf_yasg",
-    "rest_framework",
+    "apps.reviews",
+    "apps.message"
 ]
 
+INSTALLED_APPS = DJANGO_APPS + THIRD_RARTY_APPS
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
