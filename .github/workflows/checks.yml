@@ -13,24 +13,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        id: setup-python
-        uses: actions/setup-python@v4
+      - name: Set up uv with Python 3.13
+        uses: astral-sh/setup-uv@v3
         with:
-          python-version: "3.12"
-
-      - name: Install uv
-        run: pip install uv
+          python-version: "3.13"
 
       - name: Cache dependencies
         id: cache-uv
         uses: actions/cache@v3
         with:
-          key: python-${{ steps.setup-python.outputs.python-version }}-uv-${{ hashFiles('pyproject.toml', 'uv.lock') }}
+          key: uv-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
           path: ~/.cache/uv
 
       - name: Install dependencies
-        run: uv pip install -r uv.lock --system
+        run: uv sync --locked
 
       - name: Run isort
         run: uv run isort . --check --diff
@@ -76,24 +72,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        id: setup-python
-        uses: actions/setup-python@v4
+      - name: Set up uv with Python 3.13
+        uses: astral-sh/setup-uv@v3
         with:
-          python-version: "3.12"
-
-      - name: Install uv
-        run: pip install uv
+          python-version: "3.13"
 
       - name: Cache dependencies
         id: cache-uv
         uses: actions/cache@v3
         with:
-          key: python-${{ steps.setup-python.outputs.python-version }}-uv-${{ hashFiles('pyproject.toml', 'uv.lock') }}
+          key: uv-${{ runner.os }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
           path: ~/.cache/uv
 
       - name: Install dependencies
-        run: uv pip install -r uv.lock --system
+        run: uv sync --locked
 
       - name: Set multiline environment variable
         run: |
