@@ -38,3 +38,28 @@ class Study(models.Model):
 
     def str(self):
         return self.title
+
+
+# 스터디 멤버
+class StudyMember(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    study = models.ForeignKey(Study, on_delete=models.CASCADE)
+    is_permitted = models.BooleanField(default=False)
+    role = models.CharField(max_length=50)
+
+
+# 방장 미션
+class LeaderMission(models.Model):
+    study = models.ForeignKey(Study, on_delete=models.CASCADE)
+    final_goal = models.TextField()
+    common_mission = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+# 스터디원 미션
+class DailyMission(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    study = models.ForeignKey(Study, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
