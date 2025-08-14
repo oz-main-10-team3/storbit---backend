@@ -1,6 +1,5 @@
 name: Code Quality Checks
 
-# develop, main 브랜치를 상대로 풀 리퀘스트가 생성될 때 CI가 실행됩니다.
 on:
   pull_request:
     branches:
@@ -9,53 +8,35 @@ on:
 
 jobs:
   ci:
-    # 가장 최신 버전의 Ubuntu를 OS 환경으로 설정합니다.
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Python
+        id: setup-python
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
 
-      - name: Cache Poetry
-        id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          key: poetry-2.0.0
-          path: ~/.local/ # poetry 의 실제 설치 경로를 통째로 캐시함.
-
-      - name: Install Poetry
-        if: steps.cache-poetry.outputs.cache-hit != 'true'
-        run: | # 개행을 하여 여러줄로 명령어를 사용하고 싶을때 파이프라인 기호 | 를 사용한다.
-          curl -sSL https://install.python-poetry.org | python3 -
-
-      # 포에트리 환경변수를 깃허브 패스(.zshrc 같은 쉘 설정파일)에 기입하여 포에트리 명령어를 사용할 수 있게 합니다.
-      - name: Register Poetry bin
-        run: echo "${HOME}/.poetry/bin" >> $GITHUB_PATH
+      - name: Install uv
+        run: pip install uv
 
       - name: Cache dependencies
-        id: cache-venv
+        id: cache-uv
         uses: actions/cache@v3
         with:
-          # hashFiles를 사용하여 파일의 해시값을 비교하여 파이썬 버전이 바뀌었을 때, lock 파일이나 toml 파일이 바뀌었을때 종속성을 재설치합니다.
-          # 바뀐 것이 없는 경우에는 캐싱된 종속성을 사용합니다.
-          key: python-${{ steps.setup-python.outputs.python-version }}-poetry-lock-${{ hashFiles('poetry.lock') }}-toml-${{ hashFiles('pyproject.toml') }}-poetry-2.0.0
-          path: /home/runner/.cache/pypoetry/virtualenvs/
+          key: python-${{ steps.setup-python.outputs.python-version }}-uv-${{ hashFiles('pyproject.toml', 'uv.lock') }}
+          path: ~/.cache/uv
 
       - name: Install dependencies
-        if: steps.cache-venv.outputs.cache-hit != 'true'
-        run: poetry install --no-root
+        run: uv pip install -r uv.lock --system
 
-      - name: Run isort (Import sorting)
-        run: |
-          poetry run isort . --check --diff
+      - name: Run isort
+        run: uv run isort . --check --diff
 
-      - name: Run black (Code formatting)
-        run: |
-          poetry run black . --check
+      - name: Run black
+        run: uv run black . --check
 
       - name: Set multiline environment variable
         run: |
@@ -63,12 +44,11 @@ jobs:
           echo "${{ secrets.DJANGO_ENVS }}" >> envs/.local.env
 
       - name: Run Mypy
-        run: poetry run mypy .
+        run: uv run mypy .
 
   test:
     runs-on: ubuntu-latest
     services:
-      # postgresql db service
       db:
         image: postgres:14
         ports:
@@ -78,13 +58,11 @@ jobs:
           POSTGRES_PASSWORD: pw1234
           POSTGRES_DB: storbit
           TZ: Asia/Seoul
-        # health check
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-      # redis service
       redis:
         image: redis:latest
         ports:
@@ -99,46 +77,31 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Python
+        id: setup-python
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
 
-      - name: Cache Poetry
-        id: cache-poetry
-        uses: actions/cache@v3
-        with:
-          key: poetry-2.0.0
-          path: ~/.local/
-
-      - name: Install Poetry
-        if: steps.cache-poetry.outputs.cache-hit != 'true'
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-
-      # 포에트리 환경변수를 깃허브 패스(.zshrc 같은 쉘 설정파일)에 기입하여 포에트리 명령어를 사용할 수 있게 합니다.
-      - name: Register Poetry bin
-        run: echo "${HOME}/.poetry/bin" >> $GITHUB_PATH
+      - name: Install uv
+        run: pip install uv
 
       - name: Cache dependencies
-        id: cache-venv
+        id: cache-uv
         uses: actions/cache@v3
         with:
-          key: python-${{ steps.setup-python.outputs.python-version }}-poetry-lock-${{ hashFiles('poetry.lock') }}-toml-${{ hashFiles('pyproject.toml') }}-poetry-2.0.0
-          path: /home/runner/.cache/pypoetry/virtualenvs/
+          key: python-${{ steps.setup-python.outputs.python-version }}-uv-${{ hashFiles('pyproject.toml', 'uv.lock') }}
+          path: ~/.cache/uv
 
       - name: Install dependencies
-        if: steps.cache-venv.outputs.cache-hit != 'true'
-        run: poetry install --no-root
+        run: uv pip install -r uv.lock --system
 
       - name: Set multiline environment variable
         run: |
           mkdir envs
           echo "${{ secrets.DJANGO_ENVS }}" >> envs/.local.env
 
-      # run migration
       - name: Run Django Migration
-        run: |
-          poetry run python manage.py migrate
+        run: uv run python manage.py migrate
 
       - name: Check each app has test & Run coverage
         run: |
@@ -151,7 +114,7 @@ jobs:
               test_files=$(find "$app_path" -type f \( -name "tests.py" -o -name "test_*.py" \))
               if [ -n "$test_files" ] && grep -q "def test_" $test_files 2>/dev/null; then
                 echo "✅ Running tests for $app_name"
-                poetry run coverage run --source="$app_path" --append manage.py test "apps.$app_name"
+                uv run coverage run --source="$app_path" --append manage.py test "apps.$app_name"
                 ran_tests=true
               else
                 echo "⚠️  No test functions found in $app_name"
@@ -162,7 +125,7 @@ jobs:
           done
 
           if [ "$ran_tests" = true ]; then
-            poetry run coverage report -m
+            uv run coverage report -m
           else
             echo "🚫 No tests were run. Skipping coverage report."
           fi
