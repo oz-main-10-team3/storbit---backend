@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -44,7 +44,6 @@ class StudyRoomViewSet(viewsets.ModelViewSet):
         StudyMember.objects.create(
             study_room=study_room, user=self.request.user, role=StudyMember.Role.MASTER, is_permitted=True
         )
-
 
     @extend_schema(summary="스터디룸 목록 조회", description="전체 스터디룸 목록을 최신순으로 조회합니다.")
     def list(self, request, *args, **kwargs):
