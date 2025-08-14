@@ -16,7 +16,7 @@ class CategoryListView(generics.ListAPIView):
         summary="대분류 카테고리 목록 조회",
         description="대분류(최상위) 카테고리 리스트를 반환합니다.",
         responses={200: CategorySerializer(many=True)},
-    ) # <-- 닫는 괄호 추가
+    )  # <-- 닫는 괄호 추가
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
@@ -41,7 +41,6 @@ class SubCategoryListView(APIView):
         parent_id = request.GET.get("parent_id")
         if parent_id is None:
             return Response({"error": "parent_id is required"}, status=status.HTTP_400_BAD_REQUEST)
-
 
         try:
             parent_id = int(parent_id)
