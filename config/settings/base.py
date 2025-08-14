@@ -30,15 +30,9 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
     "drf_spectacular",
     "rest_framework",
-    ]
-
-THIRD_RARTY_APPS=[
-    "apps.category",
-    "apps.studies",
-    "apps.users",
-    "apps.reviews",
-    "apps.message"
 ]
+
+THIRD_RARTY_APPS = ["apps.category", "apps.studies", "apps.users", "apps.reviews", "apps.message"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_RARTY_APPS
 REST_FRAMEWORK = {
