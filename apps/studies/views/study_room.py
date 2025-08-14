@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -15,15 +15,16 @@ from apps.studies.serializers.study_room import StudyRoomSerializer
 User = get_user_model()
 
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
-    """
-    방장(owner)만 수정/삭제, 권한 위임 가능
-    """
-
+class IsStudyRoomMaster(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return obj.owner == request.user
+
+        try:
+            member = StudyMember.objects.get(study_room=obj, user=request.user)
+            return member.role == StudyMember.Role.MASTER
+        except StudyMember.DoesNotExist:
+            return False
 
 
 @extend_schema(tags=["스터디룸"])
@@ -34,7 +35,18 @@ class StudyRoomViewSet(viewsets.ModelViewSet):
 
     queryset = Study.objects.all()
     serializer_class = StudyRoomSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsStudyRoomMaster]
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return StudyRoomCreateSerializer
+        return self.serializer_class
+
+    def perform_create(self, serializer):
+        study_room = serializer.save()
+        StudyMember.objects.create(
+            study_room=study_room, user=self.request.user, role=StudyRole.MASTER, is_permitted=True
+        )
 
     @extend_schema(summary="스터디룸 목록 조회", description="전체 스터디룸 목록을 최신순으로 조회합니다.")
     def list(self, request, *args, **kwargs):
@@ -64,28 +76,47 @@ class StudyRoomViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="스터디룸 방장 권한 위임",
-        description="현재 방장이 다른 사용자에게 방장 권한을 위임합니다.",
-        request=None,
-        responses={200: None, 403: None, 404: None},
+        description="현재 방장이 다른 스터디 멤버에게 방장 권한을 위임합니다.",
+        request=TransferOwnerSerializer,
+        responses={
+            200: {"description": "방장 권한이 성공적으로 위임되었습니다."},
+            400: {"description": "잘못된 요청"},
+            403: {"description": "권한 없음"},
+            404: {"description": "스터디룸 또는 멤버를 찾을 수 없음"},
+        },
     )
-    @action(detail=True, methods=["post"], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=True, methods=["post"])
     def change_owner(self, request, pk=None):
         study_room = self.get_object()
-        if study_room.owner != request.user:
-            return Response({"detail": "현재 방장만 권한을 변경할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
+        serializer = TransferOwnerSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        new_owner_id = request.data.get("new_owner_id")
-        if not new_owner_id:
-            return Response({"detail": "new_owner_id를 입력해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+        new_owner_id = serializer.validated_data["new_owner_id"]
+        current_user = request.user
 
         try:
-            new_owner = User.objects.get(id=new_owner_id)
-        except User.DoesNotExist:
-            return Response({"detail": "지정한 사용자가 존재하지 않습니다."}, status=status.HTTP_404_NOT_FOUND)
+            current_owner_member = StudyMember.objects.get(
+                study_room=study_room, user=current_user, role=StudyRole.MASTER
+            )
+        except StudyMember.DoesNotExist:
+            return Response({"detail": "현재 방장만 권한을 변경할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
 
-        study_room.owner = new_owner
-        study_room.save()
-        return Response({"detail": f"방장이 {new_owner.username}님으로 변경되었습니다."})
+        try:
+            new_owner_member = StudyMember.objects.get(study_room=study_room, user_id=new_owner_id)
+        except StudyMember.DoesNotExist:
+            return Response({"detail": "지정한 사용자는 스터디 멤버가 아닙니다."}, status=status.HTTP_404_NOT_FOUND)
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        if current_user.id == new_owner_id:
+            return Response(
+                {"detail": "자기 자신에게는 권한을 위임할 수 없습니다."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        current_owner_member.role = StudyRole.MEMBER
+        current_owner_member.save()
+
+        new_owner_member.role = StudyRole.MASTER
+        new_owner_member.save()
+
+        return Response(
+            {"detail": f"방장이 {new_owner_member.user.username}님으로 변경되었습니다."}, status=status.HTTP_200_OK
+        )

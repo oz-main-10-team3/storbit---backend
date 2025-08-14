@@ -5,6 +5,8 @@ from apps.studies.views.study_room import StudyRoomViewSet
 
 router = DefaultRouter()
 
-router.register(r"studyrooms", StudyRoomViewSet, basename="studyroom")
+router.register(r"study-rooms", StudyRoomViewSet, basename="studyroom")
 
-urlpatterns = router.urls
+urlpatterns = [
+    path("", include(router.urls)),
+]
