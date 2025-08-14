@@ -1,10 +1,10 @@
 from django.db import models
-from apps.studies.models import Study
-from apps.users.models import User
 
 from apps.studies.models import Study
 from apps.users.models import User
 
+from apps.studies.models import Study
+from apps.users.models import User
 
 class Review(models.Model):
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
