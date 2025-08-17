@@ -9,9 +9,9 @@ services:
       context: .
     working_dir: /storbit
     command: >
-      sh -c "uv run python manage.py migrate &&
-             uv run python manage.py collectstatic --noinput &&
-             uv run gunicorn --workers 3 --worker-class=uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 config.asgi:application
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn --workers 3 --worker-class=uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 config.asgi:application
              "
     ports:
       - "8000:8000"

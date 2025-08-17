@@ -19,10 +19,3 @@ INTERNAL_IPS = [
 ]
 
 ALLOWED_ORIGINS: list[str] = os.getenv("CORS_ALLOWED_ORIGINS", "").split(" ")
-CORS_ALLOWED_ORIGINS: list[str] = [
-    "http://localhost:3000",
-]
-
-CSRF_TRUSTED_ORIGINS: list[str] = [
-    "http://localhost:3000",
-]

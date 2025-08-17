@@ -2,10 +2,10 @@ from django.http.response import JsonResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from apps.users.serializers.kakao import KakaoLoginSerializer
 from apps.users.services.social_login import KakaoLoginService
-from apps.users.utils.jwt import generate_jwt_token_pair
 
 
 class KakaoLoginView(APIView):
@@ -27,12 +27,14 @@ class KakaoLoginView(APIView):
                 return JsonResponse({"error": "Access Token 발급 실패"}, status=status.HTTP_400_BAD_REQUEST)
 
             user, created = KakaoLoginService.create_kakao_user(access_token)
-            jwt_tokens = generate_jwt_token_pair(user.id)
+
+            access = AccessToken.for_user(user)
+            refresh = RefreshToken.for_user(user)
 
             return JsonResponse(
                 {
-                    "access_token": jwt_tokens["access"],
-                    "refresh_token": jwt_tokens["refresh"],
+                    "access_token": str(access),
+                    "refresh_token": str(refresh),
                     "kakao_id": user.kakao_account.provider_id,
                     "nickname": user.nickname,
                     "email": user.email,
