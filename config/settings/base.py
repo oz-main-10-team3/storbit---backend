@@ -36,7 +36,7 @@ DJANGO_APPS = [
     "django_celery_results",
 ]
 
-THIRD_RARTY_APPS = ["apps.category", "apps.studies", "apps.users", "apps.reviews", "apps.message"]
+THIRD_RARTY_APPS = ["apps.category", "apps.studies", "apps.users", "apps.reviews", "apps.message", "apps.events"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_RARTY_APPS
 REST_FRAMEWORK = {
@@ -136,6 +136,7 @@ CACHES = {
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
     }
 }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

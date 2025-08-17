@@ -22,9 +22,9 @@ dependencies = [
     "requests>=2.32.4",
     "types-requests>=2.32.4.20250809",
     "djangorestframework-simplejwt>=5.5.1",
-    "pyjwt>=2.10.1",
     "django-cors-headers>=4.7.0",
     "django-celery-results>=2.6.0",
+    "pillow",
 ]
 
 [tool.black]
