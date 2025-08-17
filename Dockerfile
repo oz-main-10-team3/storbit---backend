@@ -1,26 +1,17 @@
 FROM python:3.13-slim
 
-# Install System Packages
+# Install system packages
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Set WORKDIR
+# Set workdir
 WORKDIR /storbit
 
-# install uv
-RUN pip install uv
-
-# copy uv setting files
-COPY pyproject.toml uv.lock ./
-
-# install dependencies
-RUN uv sync --frozen --no-dev
-
-ENV VIRTUAL_ENV=/storbit/.venv
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # copy project files
 COPY . .
-

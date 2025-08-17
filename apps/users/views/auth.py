@@ -5,8 +5,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
-from apps.users.models import User
-from apps.users.serializers.auth import LoginSerializer, SignupSerializer
+from apps.users.serializers.auth import (
+    LoginSerializer,
+    SignupSerializer,
+    UserDetailSerializer,
+)
 
 
 class SignupView(APIView):
@@ -17,7 +20,7 @@ class SignupView(APIView):
     def post(self, request):
         serializer = SignupSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = User.objects.create_user(**serializer.validated_data)
+        user = serializer.save()
 
         response = SignupSerializer(user)
         return Response(response.data, status=status.HTTP_201_CREATED)
@@ -65,3 +68,37 @@ class LogoutView(APIView):
             return Response({"message": "로그아웃 완료"}, status=status.HTTP_205_RESET_CONTENT)
         except TokenError:
             return Response({"error": "유효하지 않은 또는 만료된 토큰"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserDetailSerializer
+
+    @extend_schema(tags=["사용자 프로필"], summary="사용자 계정 정보")
+    def get(self, request):
+        user = request.user
+        serializer = self.serializer_class(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserDetailSerializer
+
+    @extend_schema(tags=["사용자 프로필"], summary="사용자 프로필 수정")
+    def put(self, request):
+        user = request.user
+        serializer = self.serializer_class(user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserDeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(tags=["사용자 프로필"], summary="사용자 회원 탈퇴")
+    def delete(self, request):
+        user = request.user
+        user.delete()
+        return Response({"message": "회원탈퇴 되었습니다."}, status=status.HTTP_204_NO_CONTENT)
