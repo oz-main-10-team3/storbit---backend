@@ -46,7 +46,16 @@ class StudyMember(models.Model):
         MASTER = "MASTER", "방장"
         MEMBER = "MEMBER", "일반 회원"
 
+    class Level(models.TextChoices):
+        BEGINNER = "beginner", "왕초보"
+        NOVICE = "novice", "초보"
+        INTERMEDIATE = "intermediate", "중급"
+        ADVANCED = "advanced", "고급"
+        MASTER = "master", "마스터"
+        ANY = "any", "무관"
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    level = models.CharField(max_length=20, choices=Level.choices)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     is_permitted = models.BooleanField(default=False)
     role = models.CharField(max_length=50, choices=Role.choices)
