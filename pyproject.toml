@@ -25,6 +25,9 @@ dependencies = [
     "django-cors-headers>=4.7.0",
     "django-celery-results>=2.6.0",
     "pillow",
+    "channels>=4.3.1",
+    "channels-redis>=4.3.0",
+    "daphne>=4.2.1",
 ]
 
 [tool.black]
