@@ -51,7 +51,7 @@ class EventDetailView(APIView):
 
 
 class AdminEventCreateView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
     serializer_class = EventCreateSerializer
 
@@ -65,7 +65,7 @@ class AdminEventCreateView(APIView):
 
 
 class AdminEventUpdateView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
     serializer_class = EventCreateSerializer
 
@@ -84,7 +84,7 @@ class AdminEventUpdateView(APIView):
 
 
 class AdminEventDeleteView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     @extend_schema(tags=["이벤트"], summary="이벤트 삭제")
     def delete(self, request, *args, **kwargs):

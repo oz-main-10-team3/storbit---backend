@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from dotenv import load_dotenv
+from rest_framework import serializers
 
 # .env 파일이 프로젝트 루트에 있다면 로드
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -51,6 +52,13 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "스터디 웹사이트입니다.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "MAPS": {
+        serializers.ImageField: {
+            "type": "string",
+            "format": "binary",
+        },
+    },
 }
 
 MIDDLEWARE = [
