@@ -1,4 +1,6 @@
 from django.utils import timezone
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from apps.events.models import Event
@@ -30,3 +32,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
         if start and end and start > end:
             raise serializers.ValidationError("시작일은 마감일보다 이후일 수 없습니다.")
         return attrs
+
+    @extend_schema_field(OpenApiTypes.BINARY)
+    def get_event_image(self, obj):
+        return obj.event_image.url
