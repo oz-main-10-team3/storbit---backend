@@ -23,6 +23,7 @@ ALLOWED_HOSTS: List[str] = raw_hosts.split()
 
 # Application definition
 DJANGO_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -108,6 +109,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
 
 # 데이터 베이스
 DATABASES = {
@@ -144,6 +146,14 @@ CACHES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(f"{REDIS_HOST}", f"{REDIS_PORT}")],
+        },
+    },
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

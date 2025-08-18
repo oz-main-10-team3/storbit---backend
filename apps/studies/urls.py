@@ -1,12 +1,13 @@
-from django.urls import include, path
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
-from apps.studies.views.study_room import StudyRoomViewSet
-
-router = DefaultRouter()
-
-router.register(r"study-rooms", StudyRoomViewSet, basename="studyroom")
+from apps.studies.views.study_room import (
+    StudyRoomCreateAPIView,
+    StudyRoomDetailAPIView,
+    StudyRoomListAPIView,
+)
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path("study-rooms/", StudyRoomListAPIView.as_view(), name="studyroom-list"),
+    path("study-rooms/create/", StudyRoomCreateAPIView.as_view(), name="studyroom-create"),
+    path("study-rooms/<int:pk>/", StudyRoomDetailAPIView.as_view(), name="studyroom-detail"),
 ]

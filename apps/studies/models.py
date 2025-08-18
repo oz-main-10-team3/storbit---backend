@@ -55,6 +55,7 @@ class StudyMember(models.Model):
         ANY = 'any', '무관'
     level = models.CharField(max_length=10, choices=Level.choices)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    level = models.CharField(max_length=20, choices=Level.choices)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     is_permitted = models.BooleanField(default=False)
     role = models.CharField(max_length=50, choices=Role.choices)

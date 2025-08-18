@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from apps.studies.models import StudyMember, Study
+from apps.studies.models import Study, StudyMember
 
 User = get_user_model()
 
@@ -38,7 +38,7 @@ class StudyRoomSerializer(serializers.ModelSerializer):
     def get_leader_name(self, obj):
         try:
             leader_member = obj.studymember_set.get(role=StudyMember.Role.MASTER)
-            return leader_member.user.username
+            return leader_member.user.fullname
         except StudyMember.DoesNotExist:
             return None
 
@@ -61,16 +61,9 @@ class StudyRoomCreateSerializer(serializers.ModelSerializer):
             "schedule",
             "start_time",
             "end_time",
+            "member",
+            "leader",
         ]
 
     def create(self, validated_data):
         return Study.objects.create(**validated_data)
-
-
-class TransferOwnerSerializer(serializers.Serializer):
-    new_owner_id = serializers.IntegerField(help_text="새로운 방장으로 위임할 사용자의 ID")
-
-    def validate_new_owner_id(self, value):
-        if not User.objects.filter(id=value).exists():
-            raise serializers.ValidationError("지정한 사용자가 존재하지 않습니다.")
-        return value
