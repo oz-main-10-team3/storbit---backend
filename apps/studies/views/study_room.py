@@ -10,10 +10,8 @@ from apps.studies.serializers.study_room import (
     StudyRoomCreateSerializer,
     StudyRoomSerializer,
 )
-from apps.studies.serializers.study_room import StudyRoomSerializer
 
 User = get_user_model()
-
 
 
 class StudyRoomListAPIView(APIView):
