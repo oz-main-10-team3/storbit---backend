@@ -19,7 +19,7 @@ class Study(models.Model):
 
     title = models.CharField(max_length=255)
     description = models.TextField()
-    thumbnail_url = models.URLField(blank=True, null=True)
+    thumbnail_url = models.ImageField(upload_to="studies/", blank=True, null=True)
     type = models.CharField(max_length=100)
     member = models.IntegerField()
     is_active = models.BooleanField(default=True)
@@ -55,6 +55,7 @@ class StudyMember(models.Model):
         ANY = "any", "무관"
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
     level = models.CharField(max_length=20, choices=Level.choices)
     study = models.ForeignKey(Study, on_delete=models.CASCADE)
     is_permitted = models.BooleanField(default=False)

@@ -1,7 +1,10 @@
+from xml import parsers
+
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework import permissions, status
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -15,7 +18,7 @@ User = get_user_model()
 
 
 class StudyRoomListAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = StudyRoomCreateSerializer
 
     @extend_schema(
@@ -31,7 +34,8 @@ class StudyRoomListAPIView(APIView):
 
 
 class StudyRoomCreateAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
 
     @extend_schema(
         tags=["스터디룸"],
@@ -56,6 +60,7 @@ class StudyRoomCreateAPIView(APIView):
 
 class StudyRoomDetailAPIView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_object(self, pk):
         return get_object_or_404(Study, pk=pk)
