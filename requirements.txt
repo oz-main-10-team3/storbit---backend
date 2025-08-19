@@ -21,7 +21,6 @@ cryptography==45.0.6
 daphne==4.2.1
 django==5.2.5
 django-celery-results==2.6.0
-django-channels==0.7.0
 django-cors-headers==4.7.0
 django-redis==6.0.0
 django-stubs==5.2.2
@@ -48,6 +47,7 @@ oauthlib==3.3.1
 packaging==25.0
 pathspec==0.12.1
 pillow==11.3.0
+pip==25.2
 platformdirs==4.3.8
 prompt-toolkit==3.0.51
 psycopg2-binary==2.9.10

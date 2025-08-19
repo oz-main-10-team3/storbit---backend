@@ -50,6 +50,7 @@ class StudyRoomCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Study
         fields = [
+            "id",
             "title",
             "description",
             "thumbnail_url",
