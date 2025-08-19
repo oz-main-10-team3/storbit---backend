@@ -1,6 +1,7 @@
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -14,6 +15,7 @@ class LeaderMissionCreateView(APIView):
     permission_classes = [AllowAny]
     serializer_class = LeaderMissionSerializer
 
+    @extend_schema(tags=["미션"], summary="최종목표, 공통목표")
     def post(self, request, study_id):
         study = get_object_or_404(Study, id=study_id)
         serializer = self.serializer_class(data=request.data)

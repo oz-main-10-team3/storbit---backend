@@ -15,6 +15,7 @@ class StudyConsumer(AsyncWebsocketConsumer):
         self.conn = get_redis_connection("default")
         self.user_key = f"{self.channel_name}"  # 고유 식별자
 
+        # study 확인
         try:
             study = await self.get_study(self.study_id)
         except ObjectDoesNotExist:
@@ -54,6 +55,19 @@ class StudyConsumer(AsyncWebsocketConsumer):
                 }
             )
         )
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        msg_type = data.get("type")
+
+        # ["draw:pen","draw:circle"]
+        if msg_type in ["draw:pen", "draw:circle"]:
+            await self.channel_layer.group_send(
+                self.room_group_name, {"type": "draw_message", "msg_type": msg_type, "data": data["data"]}
+            )
+
+    async def draw_message(self, event):
+        await self.send(text_data=json.dumps({"type": event["msg_type"], "data": event["data"]}))
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)

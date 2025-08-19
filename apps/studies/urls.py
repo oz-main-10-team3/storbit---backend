@@ -6,6 +6,7 @@ from apps.studies.views.study_room import (
     StudyRoomDetailAPIView,
     StudyRoomListAPIView,
 )
+from apps.studies.views.studyrooms_application import StudyMemberAPIView
 from apps.studies.views.studyrooms_apply import StudyApplyAPIView
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path("study-rooms/<int:pk>/", StudyRoomDetailAPIView.as_view(), name="studyroom-detail"),
     path("stidy-rooms/lead/<int:study_id>/", LeaderMissionCreateView.as_view(), name="leadermission-create"),
     path("studies/<int:study_id>/apply/", StudyApplyAPIView.as_view(), name="study_apply"),
+    path("studies/<int:study_id>/accept/<int:user_id>/", StudyMemberAPIView.as_view(), name="study_member_accept"),
 ]
