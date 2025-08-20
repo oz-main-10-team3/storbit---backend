@@ -12,3 +12,4 @@ Dockerfile
 .dmypy.json
 .coverage
 htmlcov/
+media/

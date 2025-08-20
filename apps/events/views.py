@@ -7,7 +7,7 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Event
+from .models import Event, EventImage
 from .serializers import (
     EventCreateSerializer,
     EventDetailSerializer,
@@ -51,21 +51,22 @@ class EventDetailView(APIView):
 
 
 class AdminEventCreateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     parser_classes = (MultiPartParser, FormParser)
     serializer_class = EventCreateSerializer
 
     @extend_schema(tags=["이벤트"], summary="이벤트 생성")
     def post(self, request):
-        serializer = self.serializer_class(data=request.data, context={"request": request})
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            event = serializer.save()  # create() 내에서 이미지도 처리
+            rsp_serializer = self.serializer_class(event)
+            return Response(rsp_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AdminEventUpdateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     parser_classes = (MultiPartParser, FormParser)
     serializer_class = EventCreateSerializer
 
@@ -76,10 +77,11 @@ class AdminEventUpdateView(APIView):
         except Event.DoesNotExist:
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = self.serializer_class(event, data=request.data, partial=False, context={"request": request})
+        serializer = self.serializer_class(event, data=request.data, partial=False)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+            event = serializer.save()
+            rsp_serializer = self.serializer_class(event)
+            return Response(rsp_serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

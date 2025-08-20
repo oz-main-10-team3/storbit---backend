@@ -1,8 +1,5 @@
 from django.db import models
 
-from apps.studies.models import Study
-from config import settings
-
 
 # 카테고리 모델 생성
 class Category(models.Model):

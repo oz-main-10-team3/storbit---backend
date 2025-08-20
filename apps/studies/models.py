@@ -1,6 +1,6 @@
 from django.conf import settings
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 
 from apps.category.models import Category
 from apps.users.models import User
@@ -79,19 +79,17 @@ class DailyMission(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
 # 찜하기
 class StudyFavorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    study = models.ForeignKey(Study, on_delete=models.CASCADE)
+    study = models.ForeignKey("studies.Study", on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=False)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "study_favorite"
         constraints = [
-            models.UniqueConstraint(fields=["user",'study'], name="unique_study_favorite"),
+            models.UniqueConstraint(fields=["user", "study"], name="unique_study_favorite"),
         ]
-
-    def __str__(self):
-        return f"{self.user_id} ❤️ {self.study_id} ({'활성' if self.is_active else '비활성'})"

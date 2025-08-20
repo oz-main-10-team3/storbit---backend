@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 
 from apps.studies.models import Study, StudyMember
 from apps.studies.serializers.study_room import (
+    StudyLiveSerializer,
     StudyRoomCreateSerializer,
     StudyRoomSerializer,
 )
@@ -101,3 +102,31 @@ class StudyRoomDetailAPIView(APIView):
         self.check_object_permissions(request, obj)
         obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class StudyActiveAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = StudyLiveSerializer
+
+    @extend_schema(tags=["스터디"], summary="스터디 활성")
+    def post(self, request, study_id):
+        study = get_object_or_404(Study, id=study_id)
+        data = {"is_live": True}
+        serializer = self.serializer_class(instance=study, data=data, partial=True, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class StudyDeactiveAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = StudyLiveSerializer
+
+    @extend_schema(tags=["스터디"], summary="스터디 비활성")
+    def post(self, request, study_id):
+        study = get_object_or_404(Study, id=study_id)
+        data = {"is_live": False}
+        serializer = self.serializer_class(instance=study, data=data, partial=True, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
