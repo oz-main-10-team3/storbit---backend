@@ -1,12 +1,14 @@
+from urllib import request
+
 from rest_framework import serializers
 
-from apps.studies.models import DailyMission, LeaderMission
+from apps.studies.models import DailyMission, LeaderMission, Study
 
 
 class LeaderMissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LeaderMission
-        fields = ["final_goal", "common_mission"]
+        fields = ["id", "final_goal", "common_mission"]
 
 
 class DailyMissionSerializer(serializers.ModelSerializer):

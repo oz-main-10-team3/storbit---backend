@@ -13,8 +13,17 @@ class StudyConsumer(AsyncWebsocketConsumer):
         self.study_id = self.scope["url_route"]["kwargs"]["study_id"]
         self.room_group_name = f"study_{self.study_id}"
         self.conn = get_redis_connection("default")
-        self.user_key = f"{self.channel_name}"  # 고유 식별자
 
+        user = self.scope["user"]
+
+        if user.is_authenticated:
+            await self.accept()
+            await self.send(json.dumps({"message": f"Welcome {user.email}!"}))
+        else:
+            # 인증 실패 -> 403 처리
+            await self.close(code=403)
+
+        self.user_key = user.email
         # study 확인
         try:
             study = await self.get_study(self.study_id)
@@ -44,7 +53,6 @@ class StudyConsumer(AsyncWebsocketConsumer):
             return
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-        await self.accept()
 
     async def mission_created(self, event):
         await self.send(

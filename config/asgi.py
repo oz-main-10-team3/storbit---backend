@@ -18,10 +18,11 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 django.setup()
 
 from apps.studies import routing
+from apps.users.utils.middleware import JWTAuthMiddleware
 
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        "websocket": AuthMiddlewareStack(URLRouter(routing.study_urlpatterns)),
+        "websocket": JWTAuthMiddleware(URLRouter(routing.study_urlpatterns)),
     }
 )

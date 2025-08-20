@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 
 from apps.category.models import Category
@@ -36,7 +37,7 @@ class Study(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def str(self):
+    def __str__(self):
         return self.title
 
 
@@ -77,3 +78,18 @@ class DailyMission(models.Model):
     title = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+# 찜하기
+class StudyFavorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    study = models.ForeignKey("studies.Study", on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "study_favorite"
+        constraints = [
+            models.UniqueConstraint(fields=["user", "study"], name="unique_study_favorite"),
+        ]

@@ -68,3 +68,23 @@ class StudyRoomCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Study.objects.create(**validated_data)
+
+
+class StudyLiveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Study
+        fields = ["id", "is_live"]
+
+    def validate(self, attrs):
+        # 요청 user 가져오기 (뷰에서 context로 넘긴 request.user)
+        request = self.context.get("request")
+        study = self.instance  # PATCH/PUT일 경우 instance, 즉 해당 Study 객체
+
+        if not request or not hasattr(request, "user"):
+            raise serializers.ValidationError("인증 정보가 없습니다.")
+
+        # 리더가 아니면 에러
+        if study.leader != request.user:
+            raise serializers.ValidationError("스터디 리더만 방 활성화/비활성화가 가능합니다.")
+
+        return attrs
